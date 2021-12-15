@@ -7,6 +7,18 @@ use Opis\JsonSchema\Schema;
 use Opis\JsonSchema\Validator;
 use voku\helper\HtmlDomParser;
 
+function array_to_object($arr){
+	if (!$arr) {
+		return (object) $arr;
+	}
+
+	if (!is_array($arr) || !is_string(array_key_first($arr))) {
+		return $arr;
+	}
+
+	return (object) array_map( __FUNCTION__, $arr);
+}
+
 class Block implements ArrayAccess {
 	public static function create_blocks($blocks, $post_id, $registry, $parent = null) {
 		$result = [];
@@ -148,7 +160,7 @@ class Block implements ArrayAccess {
 
 			$validator = new Validator();
 
-			$result = $validator->schemaValidation(json_decode(json_encode($attributes)), $schema);
+			$result = $validator->schemaValidation(array_to_object($attributes), $schema);
 
 			if ($result->isValid()) {
 				return [

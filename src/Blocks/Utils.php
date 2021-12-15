@@ -2,10 +2,24 @@
 
 namespace WPGraphQLGutenberg\Blocks;
 
+use stdClass;
+
 require_once ABSPATH . 'wp-admin/includes/admin.php';
 
 class Utils
 {
+	public static function array_to_object($arr){
+		if (!$arr) {
+			return new stdClass();
+		}
+
+		if (!is_array($arr) || !is_string(array_key_first($arr))) {
+			return $arr;
+		}
+
+		return (object) array_map( __FUNCTION__, $arr);
+	}
+
 	public static function visit_blocks($blocks, $callback)
 	{
 		return array_map(function ($block) use ($callback) {
